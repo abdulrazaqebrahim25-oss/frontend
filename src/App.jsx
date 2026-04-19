@@ -5,6 +5,10 @@ import SignUp from './pages/Signup';
 import SignIn from './pages/SignIn';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
+import AllTask from './pages/AllTask';
+import CreateTask from './pages/CreateTask';
+import TaskDetails from './pages/TaskDetails'
+import TaskUpdate from './pages/TaskUpdate'
 
 
 function App() {
@@ -32,7 +36,10 @@ function App() {
         <Route path="/sign-up" element={!user ? <SignUp /> : <Navigate to='/dashboard'/>} />
         <Route path="/sign-in" element={!user ? <SignIn setUser={setUser} /> : <Navigate to='/dashboard'/>} />
         <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <Navigate to='/sign-in'/>} />
-        
+        <Route path='/tasks' element={<AllTask/>}/>
+        <Route path='/tasks/:id' element={<TaskDetails/>}/>
+        <Route path='/tasks/create' element={<CreateTask/>}/>
+        <Route path='/tasks/edit/:id' element={<TaskUpdate/>}/>       
 
 
       </Routes>
