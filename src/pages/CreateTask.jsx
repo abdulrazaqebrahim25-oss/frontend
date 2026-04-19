@@ -86,7 +86,7 @@ function CreateTask() {
       <label htmlFor="category">Category</label>
       <input type="text" />
 
-    <button type="submit">Create Task</button>
+    <button handleSubmit={handleSubmit} type="submit">Create Task</button>
 
         </form>
 
