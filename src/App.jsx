@@ -5,7 +5,7 @@ import SignUp from './pages/Signup';
 import SignIn from './pages/SignIn';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
-import AllTask from './pages/AllTask';
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -32,7 +32,7 @@ function App() {
         <Route path="/sign-up" element={!user ? <SignUp /> : <Navigate to='/dashboard'/>} />
         <Route path="/sign-in" element={!user ? <SignIn setUser={setUser} /> : <Navigate to='/dashboard'/>} />
         <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <Navigate to='/sign-in'/>} />
-        <Route path="/tasks" element={user ? <AllTask user={user} /> : <Navigate to='/dashboard'/>} />
+        
 
 
       </Routes>
