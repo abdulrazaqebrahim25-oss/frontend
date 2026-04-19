@@ -16,7 +16,7 @@ function getAllTask() {
     }
 
     useEffect(()=>{
-        getAllTask()
+        getTasks()
     },[])
 
   return (
