@@ -80,4 +80,4 @@ function TaskDetails({ user }) {
   )
 }
 
-export default HootDetails
+export default TaskDetails
