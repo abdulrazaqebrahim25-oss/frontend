@@ -45,12 +45,14 @@ function CreateTask() {
         <label htmlFor="description">Description:</label>
         <input value={formData.description} onChange={handleChange} name='description' type="text" />
 
+        <label htmlFor="start">Start:</label>
         <input type="date" name='start' value={formData.start} onChange={handleChange} />
+        <label htmlFor="end">End:</label>
         <input type="date" name='end' value={formData.start} onChange={handleChange} />
 
       <select
         name="status"
-        value={form.status}
+        value={formData.status}
         onChange={handleChange}
       >
         <option value="pending">Pending</option>
@@ -60,7 +62,7 @@ function CreateTask() {
 
       <select
         name="routine"
-        value={form.routine}
+        value={formData.routine}
         onChange={handleChange}
       >
          <option value="one-time">One Time</option>
@@ -71,7 +73,7 @@ function CreateTask() {
 
       <select
         name="priority"
-        value={form.priority}
+        value={formData.priority}
         onChange={handleChange}
       >
         <option value="very-low">Very Low</option>
@@ -80,6 +82,9 @@ function CreateTask() {
         <option value="high">High</option>
         <option value="urgent">Urgent</option>
       </select> 
+
+      <label htmlFor="category">Category</label>
+      <input type="text" />
 
     <button type="submit">Create Task</button>
 
