@@ -8,9 +8,9 @@ function CreateTask() {
     description: '',
     start: '',
     end: '',
-    status: '',
-    routine: '',
-    priority: '',
+    status: 'pending',
+    routine: 'one-time',
+    priority: 'medium',
     category: ''
     })
 
@@ -25,7 +25,9 @@ function CreateTask() {
         try{
         const token = localStorage.getItem('token')
         const createdTask = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/tasks`,formData,{headers:{Authorization:`Bearer ${token}`}})
-        navigate(`/tasks/${createdHoot.data._id}`)
+        navigate(`/tasks/${createdTask.data._id}`)
+        console.log(formData)
+        console.log(createdTask.data)
 
         }
         catch(err){
@@ -39,7 +41,7 @@ function CreateTask() {
     <div>
         <h1>Crate New Task</h1>
 
-        <form onSubmit={handleChange}>
+        <form onSubmit={handleSubmit}>
         <label htmlFor="title">Title:</label>
         <input value={formData.title} onChange={handleChange} name='title' type="text" />
         <label htmlFor="description">Description:</label>
@@ -48,7 +50,7 @@ function CreateTask() {
         <label htmlFor="start">Start:</label>
         <input type="date" name='start' value={formData.start} onChange={handleChange} />
         <label htmlFor="end">End:</label>
-        <input type="date" name='end' value={formData.start} onChange={handleChange} />
+        <input type="date" name='end' value={formData.end} onChange={handleChange} />
 
       <select
         name="status"
@@ -83,10 +85,12 @@ function CreateTask() {
         <option value="urgent">Urgent</option>
       </select> 
 
+  
       <label htmlFor="category">Category</label>
-      <input type="text" />
+      <input type="text" name='category' onChange={handleChange} value={formData.category} />
 
-    <button handleSubmit={handleSubmit} type="submit">Create Task</button>
+
+    <button type="submit">Create Task</button>
 
         </form>
 

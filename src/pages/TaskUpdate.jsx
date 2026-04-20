@@ -3,97 +3,175 @@ import axios from "axios"
 import { useNavigate, useParams } from "react-router"
 
 function UpdateTask() {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    start: "",
+    end: "",
+    status: "pending",
+    routine: "one-time",
+    priority: "medium",
+    category: ""
+  })
 
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        start: '',
-        end: '',
-        status: '',
-        routine: '',
-        priority: '',
-        category: ''
+  const [loading, setLoading] = useState(true)
+
+  const { id } = useParams()
+  const navigate = useNavigate()
+
+  // GET TASK
+  async function getTask() {
+    try {
+      const token = localStorage.getItem("token")
+
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      setFormData({
+        title: res.data.title || "",
+        description: res.data.description || "",
+        start: res.data.start ? res.data.start.split("T")[0] : "",
+        end: res.data.end ? res.data.end.split("T")[0] : "",
+        status: res.data.status || "pending",
+        routine: res.data.routine || "one-time",
+        priority: res.data.priority || "medium",
+        category: res.data.category || ""
+      })
+
+      setLoading(false)
+    } catch (err) {
+      console.log(err)
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    getTask()
+  }, [])
+
+  // HANDLE INPUT CHANGE
+  function handleChange(e) {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
     })
+  }
 
-    const { id } = useParams()
-    const navigate = useNavigate()
+  // SUBMIT UPDATE
+  async function handleSubmit(e) {
+    e.preventDefault()
 
-    async function getTask(){
-        const foundTask = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`)
+    try {
+      const token = localStorage.getItem("token")
 
-        setFormData(foundTask.data)
-
-    }
-
-    useEffect(()=>{
-        getTask()
-    },[])
-
-        function handleChange(event){
-        setFormData({...formData, [event.target.name]:event.target.value})
-    }
-
-    async function handleSubmit(event){
-        event.preventDefault()
-        try{
-        const token = localStorage.getItem('token')
-        const createdTask = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`,formData,{headers:{Authorization:`Bearer ${token}`}})
-        navigate(`/tasks/${createdTask.data._id}`)
-
+      const res = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         }
-        catch(err){
-            console.log(err)
-        }
+      )
 
+      navigate(`/tasks/${res.data._id}`)
+    } catch (err) {
+      console.log(err)
     }
+  }
+
+  if (loading) return <p>Loading...</p>
+
   return (
     <div>
-        <h1>Update Task</h1>
+      <h1>Update Task</h1>
 
-        <form onSubmit={handleChange}>
-        <label htmlFor="title">Title:</label>
-        <input value={formData.title} onChange={handleChange} name='title' type="text" />
-        <label htmlFor="description">Description:</label>
-        <input value={formData.description} onChange={handleChange} name='description' type="text" />
+      <form onSubmit={handleSubmit}>
+        <label>Title</label>
+        <input
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+        />
 
-        <input type="date" name='start' value={formData.start} onChange={handleChange} />
-        <input type="date" name='end' value={formData.start} onChange={handleChange} />
+        <label>Description</label>
+        <input
+          type="text"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+        />
 
-      <select
-        name="status"
-        value={form.status}
-        onChange={handleChange}
-      >
-        <option value="pending">Pending</option>
-        <option value="in-progress">In Progress</option>
-        <option value="completed">Completed</option>
-      </select>
+        <label>Start Date</label>
+        <input
+          type="date"
+          name="start"
+          value={formData.start}
+          onChange={handleChange}
+        />
 
-      <select
-        name="routine"
-        value={form.routine}
-        onChange={handleChange}
-      >
-         <option value="one-time">One Time</option>
-        <option value="daily">Daily</option>
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-      </select>          
+        <label>End Date</label>
+        <input
+          type="date"
+          name="end"
+          value={formData.end}
+          onChange={handleChange}
+        />
 
-      <select
-        name="priority"
-        value={form.priority}
-        onChange={handleChange}
-      >
-        <option value="very-low">Very Low</option>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-        <option value="urgent">Urgent</option>
-      </select> 
+        <label>Status</label>
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+        >
+          <option value="pending">Pending</option>
+          <option value="in-progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
 
-    <button type="submit">Update Task</button>
-            </form>
+        <label>Routine</label>
+        <select
+          name="routine"
+          value={formData.routine}
+          onChange={handleChange}
+        >
+          <option value="one-time">One Time</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+
+        <label>Priority</label>
+        <select
+          name="priority"
+          value={formData.priority}
+          onChange={handleChange}
+        >
+          <option value="very-low">Very Low</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="urgent">Urgent</option>
+        </select>
+
+
+        <label>Category</label>
+        <input
+          type="text"
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+        />
+
+        <button type="submit">Update Task</button>
+      </form>
     </div>
   )
 }

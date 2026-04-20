@@ -11,14 +11,24 @@ function TaskDetails({ user }) {
 
     async function getOneTask(){
         try{
-            const oneTask = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`)
+            const token = localStorage.getItem('token')
+    
+            const oneTask = await axios.get(
+                `${import.meta.env.VITE_BACKEND_URL}/tasks/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+    
             setTask(oneTask.data)
         }
         catch(err){
             console.log(err)
         }
     }
-
+        
     async function deleteTask(){
         try{
             const token = localStorage.getItem('token')
@@ -30,23 +40,14 @@ function TaskDetails({ user }) {
 
         }
     }
-
-    useEffect(()=>{
-        getOneHoot()
-    },[])
-
+    
+    useEffect(() => {
+        getOneTask()
+    }, [])
+    
   return (
     <div>
         <h1>Task Details</h1>
-
-            title: '',
-    description: '',
-    start: '',
-    end: '',
-    status: '',
-    routine: '',
-    priority: '',
-    category: ''
 
         { task ? 
         (<>
@@ -60,9 +61,9 @@ function TaskDetails({ user }) {
             <p>{task.category}</p>
 
             
-            {user?._id === task.uasername._id ? (
+            {user?._id == task?.username._id ?(
                 <>
-                <button onClick={deleteHoot}>Delete</button>
+                <button onClick={deleteTask}>Delete</button>
                 <Link to={`/tasks/edit/${id}`}>Edit</Link>
 
                 </>
