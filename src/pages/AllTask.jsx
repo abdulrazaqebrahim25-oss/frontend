@@ -5,15 +5,26 @@ import { Link } from "react-router"
 function getAllTask() {
     const [tasks, setTasks] = useState([])
 
-    async function getTasks() {
-        try{
-            const allTasks = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/tasks`)
-            setTasks(allTasks.data)
-        }
-        catch(err){
-            console.log(err)
-        }
+async function getTasks() {
+    try {
+        const token = localStorage.getItem("token")  
+
+        const allTasks = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/tasks`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`  
+                }
+            }
+        )
+
+        console.log(allTasks.data) // debug
+        setTasks(allTasks.data)
+
+    } catch (err) {
+        console.log(err)
     }
+}
 
     useEffect(()=>{
         getTasks()
@@ -32,9 +43,9 @@ function getAllTask() {
         <p>{oneTask.status}</p>
         <p>{oneTask.routine}</p>
         <p>{oneTask.priority}</p>
-        <p>Created: {task.createdAt}</p>
-        <p>Updated: {task.updatedAt}</p>
-        <Link to={`tasks/${oneTask._id}`}>See Details</Link>
+        <p>Created: {oneTask.createdAt}</p>
+        <p>Updated: {oneTask.updatedAt}</p>
+        <Link to={`/tasks/${oneTask._id}`}>See Details</Link>
 
 
     </div>

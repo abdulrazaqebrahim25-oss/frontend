@@ -37,9 +37,9 @@ function App() {
         <Route path="/sign-in" element={!user ? <SignIn setUser={setUser} /> : <Navigate to='/dashboard'/>} />
         <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <Navigate to='/sign-in'/>} />
         <Route path='/tasks' element={<AllTask/>}/>
-        <Route path='/tasks/:id' element={<TaskDetails/>}/>
-        <Route path='/tasks/create' element={<CreateTask/>}/>
-        <Route path='/tasks/edit/:id' element={<TaskUpdate/>}/>       
+        <Route path='/tasks/:id' element={<TaskDetails user={user}/>}/>
+        <Route path='/tasks/create' element={<CreateTask user={user}/>}/>
+        <Route path='/tasks/edit/:id' element={<TaskUpdate user={user}/>}/>       
 
 
       </Routes>
