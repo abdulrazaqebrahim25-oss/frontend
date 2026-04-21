@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router"
 function UpdateTask() {
   const { id } = useParams()
   const navigate = useNavigate()
-  
+  const baseURL = "http://localhost:3000"
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -45,7 +45,7 @@ function UpdateTask() {
         setCategories(resCats.data)
 
         // 3. Get Reminders
-        const resRem = await axios.get(`${baseURL}/reminders/task/${id}`, {
+        const resRem = await axios.get(`${baseURL}/reminder/task/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         setDbReminders(resRem.data)
@@ -61,7 +61,7 @@ function UpdateTask() {
 
   const handleCreateReminder = async () => {
     const token = localStorage.getItem('token')
-    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/reminders`, 
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/reminder`, 
       { message: msg, remindAt: time, taskID: id }, 
       { headers: { Authorization: `Bearer ${token}` } }
     )
