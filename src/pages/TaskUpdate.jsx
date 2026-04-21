@@ -15,6 +15,43 @@ function UpdateTask() {
         category: ''
     })
 
+
+const [categories, setCategories] = useState([]);
+const [dbReminders, setDbReminders] = useState([]);
+const [msg, setMsg] = useState('');
+const [time, setTime] = useState('');
+
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  
+  axios.get(`${import.meta.env.VITE_BACKEND_URL}/categories`)
+    .then(res => setCategories(res.data));
+
+  axios.get(`${import.meta.env.VITE_BACKEND_URL}/reminders/task/${id}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  }).then(res => setDbReminders(res.data));
+}, [id]);
+
+const handleCreateReminder = async () => {
+  const token = localStorage.getItem('token');
+  const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/reminders`, 
+    { message: msg, remindAt: time, taskID: id }, 
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  setDbReminders([...dbReminders, res.data]);
+  setMsg('');
+  setTime('');
+};
+
+const handleDeleteReminder = async (rid) => {
+  const token = localStorage.getItem('token');
+  await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/reminders/${rid}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  setDbReminders(dbReminders.filter(r => r._id !== rid));
+};
+
+
     const { id } = useParams()
     const navigate = useNavigate()
 
@@ -50,7 +87,7 @@ function UpdateTask() {
     <div>
         <h1>Update Task</h1>
 
-        <form onSubmit={handleChange}>
+        <form onSubmit={handleSubmit}>
         <label htmlFor="title">Title:</label>
         <input value={formData.title} onChange={handleChange} name='title' type="text" />
         <label htmlFor="description">Description:</label>
@@ -91,6 +128,28 @@ function UpdateTask() {
         <option value="high">High</option>
         <option value="urgent">Urgent</option>
       </select> 
+
+
+<label>Category:</label>
+<select name="category" value={formData.category} onChange={handleChange}>
+  <option value="">Select Category</option>
+  {categories.map(cat => (
+    <option key={cat._id} value={cat._id}>{cat.name}</option>
+  ))}
+</select>
+
+<hr />
+<h3>Reminders</h3>
+{dbReminders.map((r) => (
+  <div key={r._id}>
+    <span>{r.message}</span>
+    <button type="button" onClick={() => handleDeleteReminder(r._id)}>Delete</button>
+  </div>
+))}
+<input value={msg} onChange={e => setMsg(e.target.value)} placeholder="New message" />
+<input type="datetime-local" value={time} onChange={e => setTime(e.target.value)} />
+<button type="button" onClick={handleCreateReminder}>Add Reminder</button>
+
 
     <button type="submit">Update Task</button>
             </form>
