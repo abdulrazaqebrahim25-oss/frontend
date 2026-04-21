@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
 
@@ -13,6 +13,27 @@ function CreateTask() {
     priority: 'medium',
     category: ''
     })
+
+
+const [categories, setCategories] = useState([]);
+const [reminders, setReminders] = useState([]);
+const [remindAt, setRemindAt] = useState('');
+const [message, setMessage] = useState('');
+
+useEffect(() => {
+  const fetchCats = async () => {
+    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/category`);
+    setCategories(res.data);
+  };
+  fetchCats();
+}, []);
+
+const handleAddLocal = () => {
+  setReminders([...reminders, { message, remindAt }]);
+  setMessage('');
+  setRemindAt('');
+};
+
 
     const navigate = useNavigate()
 
@@ -86,8 +107,26 @@ function CreateTask() {
       </select> 
 
   
-      <label htmlFor="category">Category</label>
-      <input type="text" name='category' onChange={handleChange} value={formData.category} />
+<label>Category</label>
+<select 
+  name="category" 
+  value={formData.category || ""}
+  onChange={handleChange}
+>
+  <option value="">Select Category</option>
+  {categories.map(cat => (
+    <option key={cat._id} value={cat._id}>{cat.name}</option>
+  ))}
+</select>
+
+<hr />
+<h3>Reminders</h3>
+{reminders.map((r, i) => (
+  <p key={i}>{r.message} - {r.remindAt}</p>
+))}
+<input value={message} onChange={e => setMessage(e.target.value)} placeholder="Reminder message" />
+<input type="datetime-local" value={remindAt} onChange={e => setRemindAt(e.target.value)} />
+<button type="button" onClick={handleAddLocal}>Add Reminder</button>
 
 
     <button type="submit">Create Task</button>
