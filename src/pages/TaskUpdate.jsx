@@ -59,16 +59,37 @@ function UpdateTask() {
     getData()
   }, [id])
 
-  const handleCreateReminder = async () => {
-    const token = localStorage.getItem('token')
+const handleCreateReminder = async () => {
+  const token = localStorage.getItem('token')
+  
+  try {
     const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/reminder`, 
       { message: msg, remindAt: time, taskID: id }, 
       { headers: { Authorization: `Bearer ${token}` } }
     )
+    
     setDbReminders([...dbReminders, res.data])
+
+    const newLocalReminder = { msg: msg, time: time }
+    const existing = JSON.parse(localStorage.getItem('localReminders') || "[]")
+    existing.push(newLocalReminder)
+    localStorage.setItem('localReminders', JSON.stringify(existing))
+
     setMsg('')
     setTime('')
+    alert("Reminder set successfully!")
+
+  } catch (err) {
+    const newLocalReminder = { msg: msg, time: time }
+    const existing = JSON.parse(localStorage.getItem('localReminders') || "[]")
+    existing.push(newLocalReminder)
+    localStorage.setItem('localReminders', JSON.stringify(existing))
+
+    setMsg('')
+    setTime('')
+    alert("Reminder saved to browser!")
   }
+}
 
   const handleDeleteReminder = async (rid) => {
     const token = localStorage.getItem('token')
