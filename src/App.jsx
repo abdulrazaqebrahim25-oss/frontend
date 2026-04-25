@@ -9,6 +9,8 @@ import AllTask from './pages/AllTask';
 import CreateTask from './pages/CreateTask';
 import TaskDetails from './pages/TaskDetails'
 import TaskUpdate from './pages/TaskUpdate'
+import CreateCategory from './pages/CreateCategory';
+import AllCategories from './pages/AllCategories';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -60,7 +62,9 @@ function App() {
         <Route path='/tasks' element={<AllTask/>}/>
         <Route path='/tasks/:id' element={<TaskDetails user={user}/>}/>
         <Route path='/tasks/create' element={<CreateTask user={user}/>}/>
-        <Route path='/tasks/edit/:id' element={<TaskUpdate user={user}/>}/>       
+        <Route path='/tasks/edit/:id' element={<TaskUpdate user={user}/>}/> 
+        <Route path="/categories" element={<AllCategories user={user} />} />
+        <Route path="/categories/create" element={<CreateCategory user={user} />} />      
       </Routes>
     </div>
   );
