@@ -2,61 +2,69 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import { Link } from "react-router"
 
-function getAllTask() {
-    const [tasks, setTasks] = useState([])
+function GetAllTask() {
+  const [tasks, setTasks] = useState([])
 
-async function getTasks() {
+  async function getTasks() {
     try {
-        const token = localStorage.getItem("token")  
+      const token = localStorage.getItem("token")
 
-        const allTasks = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/tasks`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`  
-                }
-            }
-        )
+      const allTasks = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/tasks`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
 
-        console.log(allTasks.data) // debug
-        setTasks(allTasks.data)
+      setTasks(allTasks.data)
 
     } catch (err) {
-        console.log(err)
+      console.log(err)
     }
-}
+  }
 
-    useEffect(()=>{
-        getTasks()
-    },[])
+  useEffect(() => {
+    getTasks()
+  }, [])
 
   return (
-    <div>
-    
-    <h1>All Tasks </h1>
-    {tasks.map((oneTask)=>
-    <div key={oneTask._id}>
-        <h1>{oneTask.title}</h1>
-        <h3>{oneTask.description}</h3>
-        <p>{oneTask.start}</p>
-        <p>{oneTask.end}</p>
-        <p>{oneTask.status}</p>
-        <p>{oneTask.routine}</p>
-        <p>{oneTask.priority}</p>
-        <p>Created: {oneTask.createdAt}</p>
-        <p>Updated: {oneTask.updatedAt}</p>
-        <Link to={`/tasks/${oneTask._id}`}>See Details</Link>
+    <div className="container">
 
+      <h1 style={{ textAlign: "center" }}>All Tasks</h1>
 
-    </div>
-    
-    
-    )}
-    
-    {tasks.length === 0 && <h2> No Task Available</h2>}
-    
+      <div className="tasks-grid">
+
+        {tasks.map((oneTask) => (
+          <div className="task-card" key={oneTask._id}>
+
+            <h2>{oneTask.title}</h2>
+            <p>{oneTask.description}</p>
+
+            <p><b>Start:</b> {oneTask.start}</p>
+            <p><b>End:</b> {oneTask.end}</p>
+            <p><b>Status:</b> {oneTask.status}</p>
+            <p><b>Routine:</b> {oneTask.routine}</p>
+            <p><b>Priority:</b> {oneTask.priority}</p>
+
+            <Link className="nav-item" to={`/tasks/${oneTask._id}`}>
+              See Details
+            </Link>
+
+          </div>
+        ))}
+
+      </div>
+
+      {tasks.length === 0 && (
+        <h2 style={{ textAlign: "center", marginTop: "30px" }}>
+          No Task Available
+        </h2>
+      )}
+
     </div>
   )
 }
 
-export default getAllTask
+export default GetAllTask

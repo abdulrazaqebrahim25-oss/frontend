@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { useParams, useNavigate, Link } from 'react-router'
+import '../App.css'
 
 function TaskDetails({ user }) {
   const [task, setTask] = useState(null)
@@ -13,7 +14,6 @@ function TaskDetails({ user }) {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  
   async function getOneTask() {
     try {
       const token = localStorage.getItem('token')
@@ -33,7 +33,6 @@ function TaskDetails({ user }) {
     }
   }
 
-  
   const sendMessage = async (customText) => {
     const text = customText || input
     if (!text || !task) return
@@ -66,7 +65,9 @@ function TaskDetails({ user }) {
         }
       )
 
-      setMessages([...newMessages, res.data])
+      setMessages([
+        ...newMessages,res.data
+      ])
 
     } catch (err) {
       console.log(err)
@@ -75,7 +76,6 @@ function TaskDetails({ user }) {
     setLoadingAI(false)
   }
 
-  
   async function deleteTask() {
     try {
       const token = localStorage.getItem('token')
@@ -91,7 +91,6 @@ function TaskDetails({ user }) {
     }
   }
 
-  
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
@@ -101,69 +100,89 @@ function TaskDetails({ user }) {
   }, [])
 
   return (
-    <div>
+    <div className="container">
+         <Link to="/tasks" className="nav-item">
+        ← Back to All Tasks
+      </Link>
       <h1>Task Details</h1>
 
       {task ? (
         <>
-          
-          <h2>{task.title}</h2>
-          <p>{task.description}</p>
-          <p>{task.start}</p>
-          <p>{task.end}</p>
-          <p>{task.status}</p>
-          <p>{task.routine}</p>
-          <p>{task.priority}</p>
+          <div className="task-card">
 
-          {user?._id === task?.username?._id && (
-            <>
-              <button onClick={deleteTask}>Delete</button>
-              <Link to={`/tasks/edit/${id}`}>Edit</Link>
-            </>
-          )}
+            <span className={`priority-tag ${task.priority}`}>
+              {task.priority}
+            </span>
 
-          
-          <hr />
-          <h2>🤖 AI Assistant</h2>
+            <h2>{task.title}</h2>
+            <p>{task.description}</p>
+            <p><b>Start:</b> {task.start}</p>
+            <p><b>End:</b> {task.end}</p>
+            <p><b>Status:</b> {task.status}</p>
+            <p><b>Routine:</b> {task.routine}</p>
 
-          
-          <button onClick={() => sendMessage("turn this task into simple steps")}>
-            ✨ Generate Steps
-          </button>
+            {user?._id === task?.username?._id && (
+              <div className="action-row">
+                <button className="logout-btn" onClick={deleteTask}>
+                  Delete
+                </button>
 
-          
-          <div
-            style={{
-              border: '1px solid #ccc',
-              padding: '10px',
-              height: '250px',
-              overflowY: 'auto',
-              marginTop: '10px'
-            }}
-          >
-            {messages.length === 0 && <p>Start chatting with AI...</p>}
-
-            {messages.map((msg, i) => (
-              <div key={i} style={{ marginBottom: '8px' }}>
-                <b>{msg.role === 'user' ? 'You' : 'AI'}:</b> {msg.content}
+                <Link className="nav-item" to={`/tasks/edit/${id}`}>
+                  Edit
+                </Link>
               </div>
-            ))}
-
-            {loadingAI && <p>AI is typing...</p>}
-
-            <div ref={messagesEndRef} />
+            )}
           </div>
 
-          
-          <div style={{ marginTop: '10px' }}>
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask AI..."
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-            />
+          <hr style={{ margin: '40px 0', opacity: '0.1' }} />
 
-            <button onClick={() => sendMessage()}>Send</button>
+          <div className="chat-box ai-section">
+
+            <h2 className="ai-header">🤖 AI Assistant</h2>
+
+            <button
+              className="ai-action-btn"
+              onClick={() => sendMessage("turn this task into simple steps")}
+            >
+              ✨ Generate Steps
+            </button>
+
+            <div className="messages-list">
+              {messages.length === 0 && (
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+                  Start chatting with AI...
+                </p>
+              )}
+
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`bubble ${msg.role === 'user' ? 'user' : 'ai'}`}
+                >
+                  <b>{msg.role === 'user' ? 'You' : 'AI'}:</b> {msg.content}
+                </div>
+              ))}
+
+              {loadingAI && (
+                <p className="bubble ai">AI is typing...</p>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            <div className="ai-input-row">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask AI..."
+                onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+              />
+
+              <button onClick={() => sendMessage()}>
+                Send
+              </button>
+            </div>
+
           </div>
         </>
       ) : (

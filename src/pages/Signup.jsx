@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 
+
 function Signup() {
   const [formData, setFormData] = useState({
     username: '',

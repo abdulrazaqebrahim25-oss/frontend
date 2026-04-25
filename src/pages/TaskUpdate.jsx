@@ -40,7 +40,7 @@ function UpdateTask() {
           end: resTask.data.end ? resTask.data.end.split("T")[0] : ""
         })
 
-        // 2. Get Categories (Fixed to singular 'category')
+        // 2. Get Categories 
         const resCats = await axios.get(`${baseURL}/category`)
         setCategories(resCats.data)
 
