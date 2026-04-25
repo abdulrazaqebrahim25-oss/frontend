@@ -17,6 +17,8 @@ function Navbar({ user, setUser }) {
         // Links for protected routes only for logged in users
         <>
         <Link className='nav-item' to='/dashboard'>Dashboard</Link>
+        <Link className='nav-item' to='/tasks'>Tasks</Link>
+        <Link className='nav-item' to='/tasks/create'>New Task</Link>
 
         <span className='nav-item'>{user.username}</span>
        
