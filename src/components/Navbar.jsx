@@ -19,7 +19,7 @@ function Navbar({ user, setUser }) {
         <Link className='nav-item' to='/dashboard'>Dashboard</Link>
         <Link className='nav-item' to='/tasks'>Tasks</Link>
         <Link className='nav-item' to='/tasks/create'>New Task</Link>
-        <Link className='nav-item' to='/tasks/categories'>Category</Link>
+        <Link className='nav-item' to='/categories'>Category</Link>
         
 
         <span className='nav-item'>{user.username}</span>
