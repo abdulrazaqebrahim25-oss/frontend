@@ -1,44 +1,60 @@
-import { useState, useEffect } from "react"
-import axios from "axios"
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router";
 
-function Category() {
-  const [categories, setCategories] = useState([])
-  const [name, setName] = useState("")
+function CreateCategory() {
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
 
-  const getCategories = async () => {
-    const res = await axios.get("http://localhost:3000/categories")
-    setCategories(res.data)
-  }
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    getCategories()
-  }, [])
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-  const addCategory = async (e) => {
-    e.preventDefault()
-    await axios.post("http://localhost:3000/categories", { name })
-    setName("")
-    getCategories()
+    if (!name.trim()) {
+      setError("Category name is required");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/category`,
+        { name },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      navigate("/categories"); // go to list page after creation
+    } catch (err) {
+      console.log(err);
+      setError(err.response?.data?.err || "Failed to create category");
+    }
   }
 
   return (
     <div>
-      <h2>Categories</h2>
+      <h1>Create Category</h1>
 
-      <form onSubmit={addCategory}>
+      <form onSubmit={handleSubmit}>
+        <label>Category Name</label>
         <input
+          type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="New category"
+          placeholder="Enter category name"
         />
-        <button>Add</button>
+
+        <button type="submit">Create</button>
       </form>
 
-      {categories.map((cat) => (
-        <p key={cat._id}>{cat.name}</p>
-      ))}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
-  )
+  );
 }
 
-export default Category
+export default CreateCategory; 
